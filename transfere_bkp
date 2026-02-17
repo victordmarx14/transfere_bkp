@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+################################################################################
+# AUTOR: Victor Dias Marques                                                   #
+# CONTATO: victordmarx@pm.me                                                   #
+# DATA: 08/02/2026                                                             #
+# DESCRIÇÃO: script para copiar o backup total para pendrive e mini PC         #
+################################################################################
+
+# Define o diretório dos arquivos
+arq_bkp_dir="/var/home/victor/Seagate/Backups/$1"
+IP="192.168.0.198"
+clear
+
+while true; do 
+    if gum spin --spinner dot --title "Testando conexão com $IP" -- ping -c 1 -W5 "$IP"; then
+	arq=$(basename "$arq_bkp_dir")
+	echo "IP encontrado, copiando $arq"
+	scp "$arq_bkp_dir" backup@$IP:.
+	echo "Cópia finalizada"
+	
+	break
+
+    else
+	opcao=$(gum choose --header 'Sem resposta após 5 segundos, deseja testar novamente?' 'Sim' 'Não')
+
+	case "$opcao" in
+	    Sim) continue ;;
+	    Não) echo "Encerrando" ; clear ; break ;;
+	esac
+    fi
+done
+
+while true; do
+    if findmnt "/dev/sdc1" > /dev/null ; then # Verifica se o ponto de montagem existe
+	avail=$(df -B1 /dev/sdc1 | awk {'print $4'} | tail -1) # armazena o espaço disponível em bytes
+	file_size=$(stat -c%s "$arq_bkp_dir") # armazena o tamanho do arquivo em bytes
+	pendrive=$(df /dev/sdc1 | awk {'print $6'} | tail -1) # retorna o caminho onde está montado
+		
+	if (( avail > file_size )); then
+	    gum spin --spinner points --title "Espaço suficiente no pendrive, copiando arquivo" -- cp -v "$arq_bkp_dir" "$pendrive/bkp_completo"
+	    echo "Cópia concluída"
+	    exit 0
+
+	else
+	    arq=$(find $pendrive/bkp_completo -type f | sort | head -n 1)
+	    opcao=$(gum choose --header "Espaço insuficiente, remover backup mais antigo? $(basename $arq)" 'Sim' 'Não')
+
+	    case "$opcao" in
+		Sim) gum spin --spinner pulse --title "Removendo arquivo" -- rm -f $arq ; continue ;;
+		Não) echo "Encerrando" ; clear ; exit 1 ;;
+	    esac
+	fi
+    else
+	opcao=$(gum choose --header 'Pendrive não encontrado, deseja testar novamente?' 'Sim' 'Não')
+
+	case "$opcao" in
+	    Sim) continue ;;
+	    Não) echo "Encerrando" ; clear ; exit 1 ;;
+	esac
+    fi
+done
+
+	    
+	   
