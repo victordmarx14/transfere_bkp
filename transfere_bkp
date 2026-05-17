@@ -9,7 +9,7 @@
 ################################################################################
 
 # Define o diretório dos arquivos
-arq_bkp_dir="/var/home/victor/Seagate/Backups/backup_total_2026-05-10.gpg"
+arq_bkp_dir="/var/home/victor/Seagate/Backups/$1"
 IP="192.168.0.198"
 
 while true; do 
