@@ -5,21 +5,26 @@
 # CONTATO: victordmarx@pm.me                                                   #
 # DATA: 08/02/2026                                                             #
 # DESCRIÇÃO: script para copiar o backup total para pendrive e mini PC         #
-# VERSÃO: 1.0.2																   #
+# VERSÃO: 1.1.0      	                              			       #
 ################################################################################
 
 # Define o diretório dos arquivos
-arq_bkp_dir="/var/home/victor/Seagate/Backups/$1"
+arq_bkp_dir="$1"
 IP="192.168.0.198"
 
 while true; do 
-    if gum spin --spinner dot --title "Testando conexão com $IP" -- ping -c 1 -W5 "$IP"; then#
+    if gum spin --spinner dot --title "Testando conexão com $IP" -- ping -c 1 -W5 "$IP"; then
 		arq=$(basename "$arq_bkp_dir")
 		echo "IP encontrado, copiando $arq"
 		scp "$arq_bkp_dir" backup@$IP:.
 		echo "Cópia finalizada"
-		
-		break
+
+		opcao=$(gum choose --header 'Deseja desligar o mini PC?' 'Sim' 'Não')
+
+		case "$opcao" in
+			Sim) echo "Desligando" ; ssh backup@192.168.0.198 "sudo shutdown" ; break ;;
+			Não) break ;;
+		esac
 
    else
 		opcao=$(gum choose --header 'Sem resposta após 5 segundos, deseja testar novamente?' 'Sim' 'Não')

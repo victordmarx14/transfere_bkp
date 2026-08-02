@@ -1,5 +1,9 @@
 	# Changelog - Transfere_bkp script
 	
+	## [1.1.0] - 26/07/2026
+	### Added
+	- Criada função para desligar o mini PC após cópia dos arquivos.
+	
 	## [1.0.2] - 10/05/2026
 	### Fixed
 	- Corrigido bug que fazia não encontrar o arquivo correto no pendrive.
