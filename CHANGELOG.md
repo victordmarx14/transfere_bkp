@@ -1,5 +1,15 @@
 	# Changelog - Transfere_bkp script
 	
+	## [1.2.0] - 2026-09-13
+	
+	### Added
+	- Adicionada mensagem de sucesso na exclusão do arquivo do pendrive
+
+	### Changed
+	- Removidos os questionamentos interativos, tornando o fluxo de execução automático.
+	- Alterada mensagem de sucesso na cópia para exibição utilizando `gum`.
+	- Padronizado o nome de variável constante para letras maiúsculas.
+	
 	## [1.1.0] - 26/07/2026
 	### Added
 	- Criada função para desligar o mini PC após cópia dos arquivos.
